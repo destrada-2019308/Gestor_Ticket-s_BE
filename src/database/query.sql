@@ -23,6 +23,17 @@ CREATE TABLE IF NOT EXISTS Gerencias (
     emailEncargado VARCHAR(50) NOT NULL,
     description VARCHAR(255) NOT NULL,
     PRIMARY KEY PK_codeGerencia(codeGerencia)
+); 
+
+CREATE TABLE IF NOT EXISTS Inventario (
+    codeInventario INT NOT NULL AUTO_INCREMENT,
+    date DATE NOT NULL,
+    boleta4h TIME NOT NULL,
+    boleta2h TIME NOT NULL,
+    boleta1h TIME NOT NULL,
+    boleta30min TIME NOT NULL,
+    gasto FLOAT NOT NULL,
+    PRIMARY KEY PK_codeInventario(codeInventario)
 );
 
 CREATE TABLE IF NOT EXISTS ControlBoletas (
@@ -35,6 +46,10 @@ CREATE TABLE IF NOT EXISTS ControlBoletas (
     codeGerencia INT NOT NULL,
     codeUser INT NOT NULL,
     date DATE NOT NULL,
+    boletosUsados4h INT,
+    boletosUsados2h INT,
+    boletosUsados1h INT,
+    boletosUsados30min INT,
     PRIMARY KEY PK_codeBoleta(codeBoleta),
     CONSTRAINT FK_ControlBoletas_Gerencias FOREIGN KEY (codeGerencia) 
         REFERENCES Gerencias(codeGerencia),
@@ -42,13 +57,14 @@ CREATE TABLE IF NOT EXISTS ControlBoletas (
         REFERENCES Users(codeUser)
 );
 
-CREATE TABLE IF NOT EXISTS Inventario (
-    codeInventario INT NOT NULL AUTO_INCREMENT,
-    date DATE NOT NULL,
-    boleta_4h INT NOT NULL,
-    boleta_2h INT NOT NULL,
-    boleta_1h INT NOT NULL,
-    boleta_30min INT NOT NULL,
-    gasto FLOAT NOT NULL,
-    PRIMARY KEY PK_codeInventario(codeInventario)
+CREATE TABLE IF NOT EXISTS GastosBoletas (
+    codeGastosBoletas INT NOT NULL AUTO_INCREMENT, 
+    boleta4 INT,
+    boleta2 INT,
+    boleta1 INT,
+    boleta030 INT, 
+    codeBoleta INT NOT NULL,
+    PRIMARY KEY PK_codeGastosBoletas(codeGastosBoletas),
+    CONSTRAINT FK_GastosBoletas_ControlBoletas FOREIGN KEY (codeBoleta)
+        REFERENCES ControlBoletas(codeBoleta)
 );

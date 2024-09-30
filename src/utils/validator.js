@@ -16,6 +16,6 @@ export const checkPassword = async (password, hash) => {
         return await compare(password, hash)
     } catch (error) {
         console.error(error);
-        return err
+        return error
     }
 }

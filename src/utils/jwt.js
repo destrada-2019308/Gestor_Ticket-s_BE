@@ -11,6 +11,6 @@ export const generateJwt = async (payload) => {
         })
     } catch (error) {
         console.error(error);
-        return err;
+        return error;
     }
 }
