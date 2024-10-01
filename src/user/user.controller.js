@@ -88,10 +88,8 @@ export const addAdminDefault = async () => {
     const conn = await pool.getConnection()
     try {
         const userExists = await conn.query("SELECT * FROM Users WHERE username = 'ADMIN'")
- 
-        let user = userExists.length >= 0
   
-        if (user) return console.log('User ADMIN has been created')
+        if (userExists.length > 0) return console.log('User ADMIN has been created')
 
         const encryptPassword = await encrypt('ADMIN')
         
@@ -112,8 +110,8 @@ export const login = async (req, res) => {
     try {
         const { username, password } = req.body;
         const [user] = await conn.query('SELECT * FROM Users WHERE username = ?', [username]);
- 
-        if(user.length <= 0) return res.status(404).send({ message: 'User not found.' });
+        if(user === undefined || user === null) return res.status(404).send({ message: 'User not found.' });
+        if( user.length <= 0) return res.status(404).send({ message: 'User not found.' });
         console.log(user.password);
         
         if(user && await checkPassword(password, user.password)){
@@ -124,7 +122,7 @@ export const login = async (req, res) => {
 
         }
 
-        return res.status(401).send({ message: 'Invalid credentials.' });
+        return res.status(404).send({ message: 'Invalid credentials.' });
         
     } catch (error) {
         console.error(error);
