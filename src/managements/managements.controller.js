@@ -8,7 +8,7 @@ export const test = async (req, res) => {
 }
 
 export const getManagements = async (req, res) => {
-    const conn = pool.getConnection()
+    const conn = await pool.getConnection()
     try {
         let data = await conn.query(`SELECT * FROM Gerencias`)
 
@@ -23,7 +23,7 @@ export const getManagements = async (req, res) => {
 }   
 
 export const addManagements = async (req, res) => {
-    const conn = pool.getConnection()
+    const conn = await pool.getConnection()
     try {
         const { nameGerencia, nameEncargado, telefonoEncargado, emailEncargado, description } = req.body
 
@@ -44,7 +44,7 @@ export const addManagements = async (req, res) => {
 }
 
 export const updateManagements = async (req, res) => {
-    const conn = pool.getConnection();
+    const conn = await pool.getConnection();
     try {
         let { id } = req.params
         let { nameGerencia, nameEncargado, telefonoEncargado, emailEncargado, description } = req.body
@@ -56,6 +56,21 @@ export const updateManagements = async (req, res) => {
     } catch (error) {
         console.error(error);
         return res.status(500).send({ error: "An error occurred while updating data." })
+    }finally {
+        conn.release();
+    }
+}
+
+export const deleteManagements = async (req, res) => {
+    const conn = await pool.getConnection();
+    try {
+        const { id } = req.params
+        BigInt.prototype.toJSON = function () { return this.toString() }
+        const data = await conn.query(`DELETE FROM Gerencias WHERE codeGerencia = ?`, [id])
+        return res.send({ data })
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send({ error: "An error occurred while deleting data." })
     }finally {
         conn.release();
     }

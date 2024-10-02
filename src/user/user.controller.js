@@ -7,8 +7,8 @@ export const getUsers = async (req, res) => {
     const conn = await pool.getConnection();
     try {
         const data = await conn.query("SELECT * FROM Users");
-
-        return res.send({ data })
+ 
+        return res.send( {data} )
     } catch (error) {
         console.error(error);
         res.status(500).send({ error: "An error occurred while retrieving users." });
@@ -136,13 +136,28 @@ export const updateUser = async (req, res) => {
     const conn = await pool.getConnection();
     try {
         const { id } = req.params;
-        const { nameUser, lastname, username, email, phone, password, role, state } = req.body;
-        const data = await conn.query(`UPDATE users SET nameUser = ?, lastname = ?, username = ?, email = ?, phone = ?, password = ?, role = ?, state = ? WHERE codeUser = ? `, [nameUser, lastname, username, email, phone, password, role, state, id])
+        const { nameUser, lastname, username, email, phone, role, state } = req.body; 
+        const data = await conn.query(`UPDATE users SET nameUser = ?, lastname = ?, username = ?, email = ?, phone = ? , role = ?, state = ? WHERE codeUser = ? `, [nameUser, lastname, username, email, phone, role, state, id])
         BigInt.prototype.toJSON = function () { return this.toString() }
         return res.send({ data })
     } catch (error) {
         console.error(error);
         res.status(500).send({ error: "An error occurred while updating user." });
+    } finally {
+        conn.release();
+    }
+}
+
+export const deleteUser = async (req, res) => {
+    const conn = await pool.getConnection();
+    try {
+        const { id } = req.params;
+        BigInt.prototype.toJSON = function () { return this.toString() }
+        const data = await conn.query(`DELETE FROM users WHERE codeUser = ?`, [id]) 
+        return res.send({ data })
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({ error: "An error occurred while deleting user." });
     } finally {
         conn.release();
     }

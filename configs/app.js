@@ -6,6 +6,8 @@ import { config } from 'dotenv';
 
 // Importar rutas
 import userRoutes from '../src/user/user.routes.js';
+import managementsRoutes from '../src/managements/managements.routes.js';
+import inventaryRoutes  from '../src/inventary/inventary.routes.js';
 
 const app = express();
 config()
@@ -18,11 +20,10 @@ app.use(morgan('dev'));
 app.use(cors());
 app.use(helmet());
 
-// Rutas para los endpoints
-
-
 //Rutas para las routes
 app.use('/user', userRoutes);
+app.use('/managements', managementsRoutes);
+app.use('/inventary', inventaryRoutes);
 
 export const initServer = () => {
     app.listen(port, () => {

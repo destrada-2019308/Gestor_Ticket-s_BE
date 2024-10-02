@@ -21,17 +21,21 @@ CREATE TABLE IF NOT EXISTS Gerencias (
     nameEncargado VARCHAR(50) NOT NULL,
     telefonoEncargado VARCHAR(9) NOT NULL,
     emailEncargado VARCHAR(50) NOT NULL,
-    description VARCHAR(255) NOT NULL,
+    description VARCHAR(655) NOT NULL,
     PRIMARY KEY PK_codeGerencia(codeGerencia)
 ); 
 
 CREATE TABLE IF NOT EXISTS Inventario (
     codeInventario INT NOT NULL AUTO_INCREMENT,
     date DATE NOT NULL,
-    boleta4h TIME NOT NULL,
-    boleta2h TIME NOT NULL,
+    boleta4h TIME,
+    boleta4h_quantity INT NOT NULL,
+    boleta2h TIME,
+    boleta2h_quantity INT NOT NULL,
     boleta1h TIME NOT NULL,
+    boleta1h_quantity INT NOT NULL,
     boleta30min TIME NOT NULL,
+    boleta30min_quantity INT NOT NULL,
     gasto FLOAT NOT NULL,
     PRIMARY KEY PK_codeInventario(codeInventario)
 );
