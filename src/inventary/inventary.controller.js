@@ -18,13 +18,13 @@ export const getInventory = async (req, res) => {
 export const createInventory = async (req, res) => {
     const conn = await pool.getConnection()
     try {
-            const { date, boleta4h, boleta2h, boleta1h, boleta30min, gasto } = req.body
+            const { date, boleta4h, boleta4h_quantity, boleta2h, boleta2h_quantity, boleta1h, boleta1h_quantity, boleta30min, boleta30min_quantity, gasto } = req.body
 
             let existData = await conn.query('SELECT * FROM Inventario WHERE date = ?', [date])
             if(existData.length > 0) return res.status(400).send({ error: "Este inventario ya existe." })
                 BigInt.prototype.toJSON = function () { return this.toString() }
 
-            let addData = await conn.query('INSERT INTO Inventario (date, boleta4h, boleta2h, boleta1h, boleta30min, gasto) VALUES (?,?,?,?,?,?)', [ date, boleta4h, boleta2h, boleta1h, boleta30min, gasto ])
+            let addData = await conn.query('INSERT INTO ')
 
             return res.send({ message: 'Inventario agregado con exito.', addData })
             
