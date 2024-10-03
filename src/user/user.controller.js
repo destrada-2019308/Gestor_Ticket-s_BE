@@ -153,6 +153,7 @@ export const deleteUser = async (req, res) => {
     try {
         const { id } = req.params;
         BigInt.prototype.toJSON = function () { return this.toString() }
+
         const data = await conn.query(`DELETE FROM users WHERE codeUser = ?`, [id]) 
         return res.send({ data })
     } catch (error) {

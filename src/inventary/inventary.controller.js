@@ -20,11 +20,16 @@ export const createInventory = async (req, res) => {
     try {
             const { date, boleta4h, boleta4h_quantity, boleta2h, boleta2h_quantity, boleta1h, boleta1h_quantity, boleta30min, boleta30min_quantity, gasto } = req.body
 
+            let data = new Date()
+            let fecha = data.toISOString().split(':')[0]
+            console.log(fecha)
+            let newDate = fecha
+
             let existData = await conn.query('SELECT * FROM Inventario WHERE date = ?', [date])
             if(existData.length > 0) return res.status(400).send({ error: "Este inventario ya existe." })
                 BigInt.prototype.toJSON = function () { return this.toString() }
 
-            let addData = await conn.query('INSERT INTO ')
+            let addData = await conn.query('INSERT INTO Inventario (date, boleta4h, boleta4h_quantity, boleta2h, boleta2h_quantity, boleta1h, boleta1h_quantity, boleta30min, boleta30min_quantity, gasto) VALUES (?,?,?,?,?,?,?,?,?,?)', [newDate, boleta4h, boleta4h_quantity, boleta2h, boleta2h_quantity, boleta1h, boleta1h_quantity, boleta30min, boleta30min_quantity, gasto])
 
             return res.send({ message: 'Inventario agregado con exito.', addData })
             

@@ -8,6 +8,7 @@ import { config } from 'dotenv';
 import userRoutes from '../src/user/user.routes.js';
 import managementsRoutes from '../src/managements/managements.routes.js';
 import inventaryRoutes  from '../src/inventary/inventary.routes.js';
+import controlRoutes from '../src/control/control.routes.js';
 
 const app = express();
 config()
@@ -24,6 +25,7 @@ app.use(helmet());
 app.use('/user', userRoutes);
 app.use('/managements', managementsRoutes);
 app.use('/inventary', inventaryRoutes);
+app.use('/control', controlRoutes);
 
 export const initServer = () => {
     app.listen(port, () => {

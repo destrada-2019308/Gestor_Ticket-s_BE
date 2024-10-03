@@ -18,7 +18,7 @@ export const getManagements = async (req, res) => {
         console.error(error);
         return res.status(500).send({ error: "An error occurred while retrieving data." })
     }finally{
-        conn.release()
+        if (conn) conn.release()
     }
 }   
 
