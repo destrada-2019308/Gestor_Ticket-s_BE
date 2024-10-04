@@ -28,18 +28,24 @@ CREATE TABLE IF NOT EXISTS Gerencias (
 CREATE TABLE IF NOT EXISTS Inventario (
     codeInventario INT NOT NULL AUTO_INCREMENT,
     date DATE NOT NULL,
-    boleta4h TIME,
-    boleta4h_quantity INT NOT NULL,
-    boleta2h TIME,
-    boleta2h_quantity INT NOT NULL,
+    boleta4h TIME NOT NULL,
+    boleta2h TIME NOT NULL,
     boleta1h TIME NOT NULL,
-    boleta1h_quantity INT NOT NULL,
     boleta30min TIME NOT NULL,
-    boleta30min_quantity INT NOT NULL,
-    gasto FLOAT NOT NULL,
+    stock_boleta4h INT NOT NULL DEFAULT 0,
+    stock_boleta2h INT NOT NULL DEFAULT 0,
+    stock_boleta1h INT NOT NULL DEFAULT 0,
+    stock_boleta30min INT NOT NULL DEFAULT 0,
+
+    precio_boleta4h FLOAT NOT NULL DEFAULT 36.00, 
+    precio_boleta2h FLOAT NOT NULL DEFAULT 18.0,
+    precio_boleta1h FLOAT NOT NULL DEFAULT 9.0,
+    precio_boleta30min FLOAT NOT NULL DEFAULT 4.5,
+    
     PRIMARY KEY PK_codeInventario(codeInventario)
 );
 
+-- Tabla para control de boletas (Registro de uso)
 CREATE TABLE IF NOT EXISTS ControlBoletas (
     codeBoleta INT NOT NULL AUTO_INCREMENT,
     hrs_init TIME NOT NULL, 
@@ -60,15 +66,17 @@ CREATE TABLE IF NOT EXISTS ControlBoletas (
     CONSTRAINT FK_ControlBoletas_Users FOREIGN KEY (codeUser)
         REFERENCES Users(codeUser)
 );
-
-CREATE TABLE IF NOT EXISTS GastosBoletas (
-    codeGastosBoletas INT NOT NULL AUTO_INCREMENT, 
-    boleta4 INT,
-    boleta2 INT,
-    boleta1 INT,
-    boleta030 INT, 
-    codeBoleta INT NOT NULL,
-    PRIMARY KEY PK_codeGastosBoletas(codeGastosBoletas),
-    CONSTRAINT FK_GastosBoletas_ControlBoletas FOREIGN KEY (codeBoleta)
-        REFERENCES ControlBoletas(codeBoleta)
+ 
+-- Tabla para historial de inventario (es el resto de lo que quedo en el inventario)
+CREATE TABLE IF NOT EXISTS HistorialInventario(
+    codeHistorial INT NOT NULL AUTO_INCREMENT,
+    codeInventario INT NOT NULL,
+    cambio_boleta4h INT NOT NULL,
+    cambio_boleta2h INT NOT NULL,
+    cambio_boleta1h INT NOT NULL,
+    cambio_boleta30min INT NOT NULL,
+    PRIMARY KEY PK_codeHistorial(codeHistorial),
+    CONSTRAINT FK_HistorialInventario_Inventario FOREIGN KEY (codeInventario)
+        REFERENCES Inventario(codeInventario)
 );
+

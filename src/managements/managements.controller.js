@@ -66,6 +66,8 @@ export const deleteManagements = async (req, res) => {
     try {
         const { id } = req.params
         BigInt.prototype.toJSON = function () { return this.toString() }
+        const existingConexion = await conn.query(`SELECT * FROM ControlBoletas WHERE codeGerencia = ?`, [id])
+        if (existingConexion.length > 0) return res.status(400).send({ error: "La gerencia tiene registros asociados." })
         const data = await conn.query(`DELETE FROM Gerencias WHERE codeGerencia = ?`, [id])
         return res.send({ data })
     } catch (error) {
