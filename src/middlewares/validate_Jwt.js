@@ -30,8 +30,7 @@ export const validateJwt = async (req, res, next) => {
 export const isAdmin = async (req, res, next) => {
     try {
         let { user } = req 
-        let [newUser] = user
- 
+        let [newUser] = user 
         
         if(!newUser || newUser.role !== 'ADMIN') return res.status(403).send({ message: 'You dont have access | You are not admin' })
 
@@ -39,5 +38,33 @@ export const isAdmin = async (req, res, next) => {
     } catch (error) {
         console.error(error);
         return res.status(403).send({ message: 'Unauthorized role' })
+    }
+}
+
+export const isGerente = async (req, res, next) => {
+    try {
+        let { user } = req 
+        let [newUser] = user 
+        
+        if(!newUser || newUser.role !== 'GERENTE') return res.status(403).send({ message: 'You dont have access | You are not gerente' })
+
+        next()
+    } catch (error) {
+        console.error(error);
+        return res.status(403).send({ message: 'Unauthorized role' })       
+    }
+}
+
+export const isClient = async (req, res, next) => {
+    try {
+        let { user } = req 
+        let [newUser] = user
+
+        if(!newUser || newUser.role !== 'CLIENT') return res.status(403).send({ message: 'You dont have access | You are not client' })
+
+        next()
+    } catch (error) {
+        console.error(error);
+        return res.status(403).send({ message: 'Unauthorized role' })       
     }
 }

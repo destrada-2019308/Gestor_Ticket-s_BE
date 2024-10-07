@@ -7,7 +7,8 @@ export const getControl = async (req, res) => {
     const conn = await pool.getConnection();
     
     try {
-        let data = await conn.query(`SELECT * FROM ControlBoletas`)
+        let { codeUser } = req.params
+        let data = await conn.query(`SELECT * FROM ControlBoletas where codeUser = ?`, [codeUser])
         return res.send({data})
     } catch (error) {
         console.error(error);
@@ -17,6 +18,19 @@ export const getControl = async (req, res) => {
     }
 } 
 
+
+export const getAllControl = async (req, res) => {
+    const conn = await pool.getConnection();
+    try {
+        let data = await conn.query(`SELECT * FROM ControlBoletas`)
+        return res.send({ data })
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send({ error: "An error occurred while retrieving data." })
+    } finally {
+        conn.release();
+    }
+}
 
 export const calcularControl = async (req, res) => {
     const conn = await pool.getConnection();
@@ -200,8 +214,14 @@ export const addControl = async (req, res) => {
                             (hrs_init, hrs_end, role, description, nameClient, codeGerencia, codeUser, boletosUsados4h, boletosUsados2h, boletosUsados1h, boletosUsados30min, date )
                             VALUES (?,?,?,?,?,?,?,?,?,?,?,?)`, 
                             [ hrs_init, hrs_end, role, description, nameClient, codeGerencia, codeUser, boletosUsados4h, boletosUsados2h, boletosUsados1h, boletosUsados30min, date ])
-
-
+        await conn.query(`
+            UPDATE Inventario
+            SET stock_boleta4h = stock_boleta4h - ?,
+            stock_boleta2h = stock_boleta2h - ?,
+            stock_boleta1h = stock_boleta1h - ?,
+            stock_boleta30min = stock_boleta30min - ?
+            WHERE date = ?`, [boletosUsados4h, boletosUsados2h, boletosUsados1h, boletosUsados30min, date])
+        
         return res.send({ message: "Control agregado con exito."})
     } catch (error) {
         console.error(error);
@@ -210,3 +230,42 @@ export const addControl = async (req, res) => {
         conn.release();
     }
 }
+
+//Reporte de Control 
+export const findByRole = async (req, res) => {
+
+    const conn = await pool.getConnection();
+    try {
+        const { role } = req.body
+        console.log(role)
+        if(!role){
+            return res.status(400).send({message: "El rol no puede ser vacio"})
+        }
+        const find = await conn.query(`SELECT * FROM ControlBoletas WHERE role = ?`, [role])
+ 
+        
+        let total4h = 0
+        let total2h = 0
+        let total1h = 0
+        let total30min = 0
+
+        for(let i = 0; i < find.length; i++){
+           // console.log(find[i].boletosUsados1h) 
+           // console.log(find[i].boletosUsados2h)
+            total4h += find[i].boletosUsados4h
+            total2h += find[i].boletosUsados2h
+            total1h += find[i].boletosUsados1h
+            total30min += find[i].boletosUsados30min
+        }    
+        
+        let result = [total4h, total2h, total1h, total30min]
+
+        return res.send({ result, find})
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send({ error: "An error occurred while retrieving data." })   
+    }finally{
+        conn.release();
+    }
+}
+

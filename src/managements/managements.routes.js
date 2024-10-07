@@ -7,8 +7,8 @@ import { addManagements, getManagements, updateManagements, deleteManagements } 
 const api = Router()
 
 api.get('/getManagements', [validateJwt],getManagements )
-api.post('/addManagements', [validateJwt, isAdmin], addManagements)
-api.put('/updateManagements/:id', [validateJwt, isAdmin], updateManagements)
-api.delete('/deleteManagements/:id', [validateJwt, isAdmin], deleteManagements)
+api.post('/addManagements', [validateJwt], addManagements)
+api.put('/updateManagements/:id', [validateJwt], updateManagements)
+api.delete('/deleteManagements/:id', [validateJwt], deleteManagements)
 
 export default api

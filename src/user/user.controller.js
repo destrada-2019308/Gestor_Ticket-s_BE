@@ -21,7 +21,7 @@ export const addUser = async (req, res) => {
     const conn = await pool.getConnection();
     try {
         let { nameUser, lastname, username, email, phone, password, role, state } = req.body;
-
+        let sendData = `${nameUser} ${lastname} ${username} ${email} ${phone} ${password} ${role} ${state}`
         const newPassword = await encrypt(password)
 
         //Buscamos un usuario con los siguientes parametros
@@ -33,7 +33,10 @@ export const addUser = async (req, res) => {
 
         let result = await conn.query("INSERT INTO Users (nameUser, lastname, username, email, phone, password, role, state) VALUES (?,?,?,?,?,?,?,?)", [ nameUser, lastname, username, email, phone, newPassword, role, state ]);
         BigInt.prototype.toJSON = function () { return this.toString() }
-
+        let to = email
+        let subject = 'Text For defaul'
+        let text = `Estos son sus datos: \b ${sendData}`
+        validateEmail(to, subject, text)
         return res.send({ message: "User added successfully.", result })
 
         
@@ -63,9 +66,9 @@ const validateEmail = async (to, subject, text) => {
     }
 
     try {
-        let info = await transport.sendEmail(mailOptions);
+        let info = await transport.sendMail(mailOptions);
         console.log("Email sent: " + info.response);
-        return info
+        return info;
     } catch (error) {
         console.log('Erro sending email', error);
     }

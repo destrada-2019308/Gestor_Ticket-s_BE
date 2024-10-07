@@ -5,7 +5,7 @@ const pool = mariadb.createPool({
     user: 'root',
     password: 'root',
     database: 'gestorDeBoletas',
-    connectionLimit: 150
+    connectionLimit: 200
 })
 
 export default pool;

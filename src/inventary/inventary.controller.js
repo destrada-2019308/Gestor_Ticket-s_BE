@@ -31,7 +31,7 @@ export const createInventory = async (req, res) => {
         
         let data = new Date()
         let fecha = data.toISOString().split('T')[0] // Fecha actual en formato YYYY-MM-DD
-        
+        /*
         // Obtener el inventario
         let inventario = await conn.query('SELECT * FROM Inventario')
         
@@ -54,7 +54,7 @@ export const createInventory = async (req, res) => {
                 return res.status(400).send({ error: "Solo se puede agregar un inventario cada 15 días." })
             }
         }
-        
+        */
         // Comprobar si ya existe inventario para la fecha actual
         let existData = await conn.query('SELECT * FROM Inventario WHERE date = ?', [fecha])
         
@@ -98,3 +98,6 @@ export const updateInventory = async (req, res) => {
         conn.release();
     }
 }
+
+// Reporteria de inventario
+
