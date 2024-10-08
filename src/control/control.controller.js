@@ -36,7 +36,7 @@ export const calcularControl = async (req, res) => {
     const conn = await pool.getConnection();
     try {
 
-        let { hrs_entry } = req.body 
+        let { hrs_init } = req.body 
         let fecha = new Date()
 
         let newDate = fecha.toISOString().split('T')[0]  
@@ -45,10 +45,12 @@ export const calcularControl = async (req, res) => {
  
         const data = await conn.query('SELECT * FROM Inventario  ',  )
          
-        const tiempoDentro = (hrs_entry, hrs_end) =>{
+
+
+        const tiempoDentro = (hrs_init, hrs_end) =>{
             
             let text = ''
-            let h1 = hrs_entry.split(":")
+            let h1 = hrs_init.split(":")
             let h2 = hrs_end.split(":")
             
             //Paso 1 restamos las horas, minutos y segundos  
@@ -71,7 +73,7 @@ export const calcularControl = async (req, res) => {
           return (newHrs+ ':' + newMin + ':' + newSeg)
         }
 
-        let resutl1 = tiempoDentro(hrs_entry, hrs_actual)
+        let resutl1 = tiempoDentro(hrs_init, hrs_actual)
         console.log(resutl1)
 
         const operacion = (result, boleto4h, boleto2h, boleto1h, boleto30min) => {
@@ -198,7 +200,7 @@ export const addControl = async (req, res) => {
     const conn = await pool.getConnection();
     try {
         const { hrs_init, role, description, nameClient, codeGerencia, codeUser, boletosUsados4h, boletosUsados2h, boletosUsados1h, boletosUsados30min } = req.body;
-        
+        console.log('asdasdasdasd' + hrs_init)
         //Creamos la hora de salida
         let horaActual = new Date()
  
