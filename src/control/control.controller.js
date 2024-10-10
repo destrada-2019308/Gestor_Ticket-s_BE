@@ -117,9 +117,9 @@ export const calcularControl = async (req, res) => {
             } 
 
             let resultado_4h = `Puedes de dar ${array.length} boletos de 4h` 
-            let resultado_2h = `Debes de dar ${array2.length} boletos de 2h`
-            let resultado_1h = `Debes de dar ${array3.length} boletos de 1h`
-            let resultado_30min = `Debes de dar ${array4.length} boletos de 30min`
+            let resultado_2h = `Puedes de dar ${array2.length} boletos de 2h`
+            let resultado_1h = `Puedes de dar ${array3.length} boletos de 1h`
+            let resultado_30min = `Puedes de dar ${array4.length} boletos de 30min`
 
             return [resultado_4h, resultado_2h, resultado_1h, resultado_30min]
 
