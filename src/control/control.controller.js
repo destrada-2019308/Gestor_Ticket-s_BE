@@ -36,7 +36,7 @@ export const calcularControl = async (req, res) => {
     const conn = await pool.getConnection();
     try {
 
-        let { hrs_init } = req.body 
+        let { hrs_init, hrs_end } = req.body 
         let fecha = new Date()
 
         let newDate = fecha.toISOString().split('T')[0]  
@@ -53,6 +53,8 @@ export const calcularControl = async (req, res) => {
             let h1 = hrs_init.split(":")
             let h2 = hrs_end.split(":")
             
+            if(h2[2] === undefined) h2[2] = '00'
+            if(h1[2] === undefined) h1[2] = '00'
             //Paso 1 restamos las horas, minutos y segundos  
             
             let newHrs = h2[0] - h1[0]
@@ -73,7 +75,7 @@ export const calcularControl = async (req, res) => {
           return (newHrs+ ':' + newMin + ':' + newSeg)
         }
 
-        let resutl1 = tiempoDentro(hrs_init, hrs_actual)
+        let resutl1 = tiempoDentro(hrs_init, hrs_end)
         console.log(resutl1)
 
         const operacion = (result, boleto4h, boleto2h, boleto1h, boleto30min) => {
@@ -186,7 +188,7 @@ export const calcularControl = async (req, res) => {
           };
 
           let resultOP = operacionProporcional(resutl1, data)
-          console.log(resultOP)
+          //console.log(resultOP)
         return res.send({  result2, resultOP});
     } catch (error) {
         console.error(error);
@@ -199,13 +201,13 @@ export const calcularControl = async (req, res) => {
 export const addControl = async (req, res) => {
     const conn = await pool.getConnection();
     try {
-        const { hrs_init, role, description, nameClient, codeGerencia, codeUser, boletosUsados4h, boletosUsados2h, boletosUsados1h, boletosUsados30min } = req.body;
+        const { hrs_init, hrs_end, role, description, nameClient, codeGerencia, codeUser, boletosUsados4h, boletosUsados2h, boletosUsados1h, boletosUsados30min } = req.body;
         console.log('asdasdasdasd' + hrs_init)
         //Creamos la hora de salida
         let horaActual = new Date()
  
         let date =   horaActual.toISOString().split('T')[0];
-        let hrs_end = horaActual.toLocaleTimeString('it-IT')
+        //let hrs_end = horaActual.toLocaleTimeString('it-IT')
         console.log(date)
         console.log(hrs_end) 
         console.log(boletosUsados30min)

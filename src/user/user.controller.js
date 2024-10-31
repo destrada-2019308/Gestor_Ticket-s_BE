@@ -55,7 +55,10 @@ const validateEmail = async (to, subject, text) => {
         auth: {
             user: 'estradajuarezdiegorene@gmail.com',
             pass: 'bvpy qbeh tqwc jvdy'
-        }
+        },
+        tls: {
+            rejectUnauthorized: false // Deshabilita la verificación de certificados
+          }
     })
 
     let mailOptions = {
