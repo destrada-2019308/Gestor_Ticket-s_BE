@@ -12,6 +12,16 @@
 	margin: -20px 0 50px;
 }
 
+.img{
+	background-image: url('./logoMacro.png');
+	width: 150px;
+	height: 150px;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	position: relative;
+}
+
 body{
 	color: #222; 
 }

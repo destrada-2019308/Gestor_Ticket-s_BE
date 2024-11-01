@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import {useEffect, useState} from 'react'
 import { useLogin } from '../../shared/Login-Register/useLogin'
 
 import './style.css'
@@ -13,6 +13,23 @@ export const AuthPage = () => {
         password: ''
     })
 
+    /* Funcionalidad para hacer textos de bienvenida aleatorios */ 
+    let array  = ['Inicia sesión para acceder a las funcionalidades del proyecto ','Proyecto sobre la gestion de ticket de parqueo de Grupo Macro']
+ 
+
+    const randomText = () => {
+        let random = Math.floor(Math.random() * array.length)
+        return array[random]
+    }
+
+    const [mensaje, setMensaje] = useState(randomText);
+
+    // Actualiza el mensaje cuando el componente se monta
+    useEffect(() => {
+      setMensaje(randomText());
+    }, []);
+  
+ 
     const handleOnSubmit = (e) => {
         e.preventDefault()
         login(form)
@@ -35,11 +52,9 @@ export const AuthPage = () => {
                             <form onSubmit={handleOnSubmit} >
                                 <h1>Inicia sesión</h1>
 
-                                <div className="social-container">
-                                    <a href="#" className="social"></a>
-                                    <a href="#" className="social"></a>
-                                    <a href="#" className="social"></a>
-                                </div>
+                                <div className='img'>
+
+                                </div> 
                                 <span>usa tu cuenta personal</span>
                                 
                                 {/* <a href="#" className='div-a'>Forgot your password?</a> */}
@@ -54,7 +69,7 @@ export const AuthPage = () => {
                         <div className="overlay">
                             <div className="overlay-panel overlay-right">
                                 <h1>Hola de nuevo </h1>
-                                <p>Inicia sesión para acceder a las funcionalidades del proyecto </p>
+                                <p>{mensaje} </p>
 
                             </div>
                         </div>

@@ -2,10 +2,11 @@ import { useControl } from '../../../shared/Control/useControl'
 import { useEffect } from 'react'
 import { useManagements } from '../../../shared/Managements/useManagements'
 import { Table } from 'react-bootstrap'
+import BtnAdd from '../../../Components/UI/BtnAdd'
 
 export const GetControl = () => {
 
-    const { isControl, getControl, allControl, getAllControl } = useControl()
+    const { isControl, getControl, allControl, getAllControl, downloadExcel } = useControl()
     const { getManagements, managements } = useManagements()
 
     useEffect(() => {
@@ -13,12 +14,17 @@ export const GetControl = () => {
         getManagements()
     }, [])
 
+    const download = () => {
+        downloadExcel()
+    }
+
     return (
         <>
         <div className=" ">
         <div className="form-control ">
         <div className="m-4 p-4">
         <h2>Control de boletas</h2>
+        <BtnAdd onClick={download} name="Descargar"/> 
         <hr />
         <br />
             <Table striped bordered hover responsive>

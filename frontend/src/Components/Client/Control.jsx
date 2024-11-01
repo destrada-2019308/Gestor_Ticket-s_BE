@@ -81,8 +81,10 @@ export const Control = () => {
                             <label htmlFor="">Role</label>
                             <select name="role" id="" className='form-select my-3' key={form.role} value={form.role} onChange={handleOnChange}>
                                 <option value="">Selecciona un role</option>
-                                <option value="TRABAJADOR">TRABAJADOR</option>
-                                <option value="VISITA">VISITA</option>
+                                <option value="COLABORADOR">COLABORADOR</option>
+                                <option value="PROYECTO">PROYECTO</option>
+                                <option value="CLIENTE">CLIENTE</option>
+                                <option value="PROVEEDOR">PROVEEDOR</option>
                             </select>
                         </div>
                         <div></div>

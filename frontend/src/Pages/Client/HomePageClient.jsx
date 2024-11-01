@@ -10,11 +10,15 @@ import { useControl }  from '../../shared/Control/useControl'
 import { Table } from 'react-bootstrap'
 import InputTime from '../../Components/UI/InputTime'
 import { validateTime, timeValidatorMessage } from '../../shared/validators/validator.js'
+ 
+import Autocomplete from '../../Components/UI/Autocomplete.jsx'
 
 export const HomePageClient = () => {
 
   const { getManagements, managements } = useManagements()
-  const { addControl, calcularControl, control } = useControl()
+  const { addControl, calcularControl, control, isResult , downloadExcel, allControl, getAllControl, findByName, name} = useControl()
+ 
+
 
   const [form1, setForm1] = useState({
     hrs_init: '',
@@ -60,7 +64,10 @@ export const HomePageClient = () => {
 
   useEffect(() => {
     getManagements()
+    getAllControl() 
   }, [])
+
+ 
 
   // Effect to copy hrs_entry to hrs_init
   useEffect(() => {
@@ -85,8 +92,7 @@ export const HomePageClient = () => {
       boletosUsados1h: '',
       boletosUsados30min: ''
     })
-  }
-
+  } 
 
 
   const handleOnSubmit = (e) => {
@@ -103,16 +109,21 @@ export const HomePageClient = () => {
         
     )
     //cleanInputs()
-  }
+  } 
 
   const handleOnChange = (e) => {
-
-    
     setForm({
       ...form,
       [e.target.name]: e.target.value
     })
-  }
+    
+    console.log(form.nameClient)      
+  } 
+
+  useEffect(() => {
+    findByName(form.nameClient)
+  }, [form.nameClient])
+ 
 
   const handleOnChange1 = (e) => {
     setForm1({
@@ -159,9 +170,11 @@ export const HomePageClient = () => {
                     <div className='col'>
                       <label htmlFor="">Tipo de visitante</label>
                       <select name="role" className='form-select my-3' value={form.role} onChange={handleOnChange}>
-                        <option value="">Selecciona un tipo de visitante</option>
-                        <option value="TRABAJADOR">TRABAJADOR</option>
-                        <option value="VISITA">VISITA</option>
+                        <option value="">Selecciona un tipo de visitante</option> 
+                          <option value="COLABORADOR">COLABORADOR</option>
+                          <option value="PROYECTO">PROYECTO</option>
+                          <option value="CLIENTE">CLIENTE</option>
+                          <option value="PROVEEDOR">PROVEEDOR</option>
                       </select>
                     </div>
                     <div className="col">
@@ -179,13 +192,24 @@ export const HomePageClient = () => {
                     </div>
                     <div className="col">
                       <label htmlFor="">Nombre del visitante</label>
-                      <Input
-                        type={'text'}
-                        name="nameClient" 
+                      <input
+                        type="text"
+                        name="nameClient"
+                        className='form-control'
                         onChange={handleOnChange}
-                        placeholder={'Nombre del cliente'}
+                        placeholder="Nombre del cliente"
                         value={form.nameClient}
-                        required={true}/>
+                        required
+                        list="nameSuggestions" // Añadimos la lista de sugerencias
+                      />
+
+                      {/* Datalist para autocompletar */}
+                      <datalist id="nameSuggestions">
+                        {name.map((item, index) => (
+                          <option key={index} value={item.nameClient} />
+                        ))}
+                      </datalist>
+                        
                     </div>  
                     <div className="col">
                       <label htmlFor="">Gerencia a la que viene</label>
@@ -263,6 +287,7 @@ export const HomePageClient = () => {
                       <label htmlFor="">Ingresa la hora de entrada</label>
                       <Input 
                         type={"text"} 
+                        
                         placeholder={'00:00:00'} 
                         name={'hrs_init'} 
                         value={form.hrs_init} 
@@ -296,8 +321,11 @@ export const HomePageClient = () => {
                               </tr>
                             ))
                           }
+                          
                         </tbody>
-                      </Table>
+                      </Table> 
+                        <span className='text-danger '>{isResult}</span>
+                       
                     </div>
                   </div>
                 </form>

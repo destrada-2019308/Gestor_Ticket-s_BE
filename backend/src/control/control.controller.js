@@ -1,6 +1,7 @@
 'use strict'
 
 import pool from "../../configs/db.js"
+import XlsxPopulate from 'xlsx-populate'
 
 export const getControl = async (req, res) => {   
     
@@ -67,7 +68,7 @@ export const calcularControl = async (req, res) => {
               newMin += 60;
               newHrs -= 1;
             } 
-            newMin += 5
+            newMin += 10
             if(newMin >= 60){
                 newMin -=60
                 newHrs +=1
@@ -168,22 +169,22 @@ export const calcularControl = async (req, res) => {
               inventario.boleta30min -= totalTickets.boleta030;
             }
           
-            let resultado = ` 
-            ${totalTickets.boleta4} ticket(s) de 4 horas
+            let resultado = `
+            ${totalTickets.boleta4} ticket(s) de 4 horas \n
             `;
             let resultado2 = `
-            ${totalTickets.boleta2} ticket(s) de 2 horas
+            ${totalTickets.boleta2} ticket(s) de 2 horas\n
            
             `;
             let resultado3 = `
-            ${totalTickets.boleta1} ticket(s) de 1 hora
+            ${totalTickets.boleta1} ticket(s) de 1 hora\n
             
             `;
             let resultado4 = `
-            ${totalTickets.boleta030} ticket(s) de 30 minutos
+            ${totalTickets.boleta030} ticket(s) de 30 minutos\n
             `;
 
-            return [resultado, resultado2, resultado3, resultado4];
+            return ['Debes de dar', resultado, resultado2, resultado3, resultado4];
             
           };
 
@@ -273,3 +274,87 @@ export const findByRole = async (req, res) => {
     }
 }
 
+//Filtro para buscar por cliente 
+
+
+
+//Filtro para descargar un excel de todos los controles
+export const downloadExcel = async (req, res) => {
+    const conn = await pool.getConnection();
+    try {
+        const data = await conn.query(`SELECT * FROM ControlBoletas`)
+        //console.log(data)
+        const codeBoletas = data.map(item => [
+            item.codeBoleta,
+            item.hrs_init,
+            item.hrs_end,
+            item.role,
+            item.description,
+            item.nameClient,
+            item.codeGerencia,
+            item.codeUser,
+            item.boletosUsados4h,
+            item.boletosUsados2h,
+            item.boletosUsados1h,
+            item.boletosUsados30min,
+            new Date(item.date).toLocaleDateString('es-ES')
+        ]);
+
+        //console.log(codeBoletas)
+
+        const workbook = await XlsxPopulate.fromBlankAsync()
+ 
+        const headers = [
+            "codeBoleta", "hrs_init", "hrs_end", "role", "description", "nameClient",
+            "codeGerencia", "codeUser", "boletosUsados4h", "boletosUsados2h",
+            "boletosUsados1h", "boletosUsados30min", "date"
+        ];
+        workbook.sheet(0).cell("A1").value([headers]);
+        
+        // Agregar datos en las filas a partir de A2
+        workbook.sheet(0).cell("A2").value(codeBoletas);
+
+        // Ajusta el tamaño de las columnas
+        workbook.sheet(0).column(1).width(20);
+        workbook.sheet(0).column(2).width(20);
+        workbook.sheet(0).column(3).width(20);
+        workbook.sheet(0).column(4).width(20);
+        workbook.sheet(0).column(5).width(20);
+        workbook.sheet(0).column(6).width(20);
+        workbook.sheet(0).column(7).width(20);
+        workbook.sheet(0).column(8).width(20);
+        workbook.sheet(0).column(9).width(20);
+        workbook.sheet(0).column(10).width(20);
+        workbook.sheet(0).column(11).width(20);
+
+        // Guarda el archivo en un buffer
+        const buffer = await workbook.outputAsync();
+        
+        // Configura los encabezados
+        res.setHeader('Content-Disposition', 'attachment; filename=control.xlsx');
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+
+        // Envía el archivo como respuesta
+        res.send(buffer); 
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send({ error: "An error occurred while retrieving data." })
+    }finally{
+        conn.release();
+    }
+}
+
+export const findByName = async (req, res) => {
+    const conn = await pool.getConnection();
+    try {
+        const {name} = req.params
+        console.log(name) 
+        const data = await conn.query(`SELECT nameClient FROM ControlBoletas WHERE nameClient LIKE CONCAT('%', ?, '%')`, [name])
+        return res.send({ data })
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send({ error: "An error occurred while retrieving data." })
+    }finally{
+        conn.release();
+    }
+}

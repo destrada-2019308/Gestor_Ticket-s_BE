@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const apiClient = axios.create({
-    baseURL: "https://172.16.0.77:2656",
+    baseURL: "https://172.16.1.54:2656",
     timeout: 2000,
 });
 
@@ -135,7 +135,7 @@ export const getAllControlRequest = async () => {
 }
 
 export const findByRoleRequest = async (params) => {
-    try {
+    try { 
         return await apiClient.post("/control/findByRole", params)
     } catch (error) {
         console.error(error);
@@ -157,6 +157,25 @@ export const addInventoryRequest = async (params) => {
 export const getInventoyRequest = async () => {
     try {
         return await apiClient.get("/inventary/getInventory")
+    } catch (error) {
+        console.error(error);
+        return { error: true, error }
+    }
+}
+
+
+export const downloadExcelRequest = async () => {
+    try {
+        return await apiClient.get("/control/downloadExcel", {responseType: 'blob'})
+    } catch (error) {
+        console.error(error);
+        return { error: true, error }
+    }
+}
+
+export const findByNameRequest = async (params) => {
+    try { 
+        return await apiClient.post(`/control/findByName/${params}` )
     } catch (error) {
         console.error(error);
         return { error: true, error }

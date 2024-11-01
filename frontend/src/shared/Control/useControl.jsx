@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { toast } from 'react-hot-toast'
 import { calcularControlRequest, addControlRequest, getControlRequest, 
-  getAllControlRequest, findByRoleRequest } from '../../services/api.js'
+  getAllControlRequest, findByRoleRequest, downloadExcelRequest, findByNameRequest } from '../../services/api.js'
 
 export const useControl = () => {
 
@@ -10,6 +10,8 @@ export const useControl = () => {
     const [ isResult, setIsResult ] = useState([])
     const [ result, setResult ] = useState([])
     const [ data, setData ] = useState([])
+
+    const [ name, isName ] = useState([])
 
     const [ allControl, setAllControl ] = useState([])
 
@@ -58,6 +60,35 @@ export const useControl = () => {
     return res.data.data
 }
 
+  const findByName = async (params) => {
+    console.log(params)
+    const res = await findByNameRequest(params)
+    console.log(res)
+    
+    //if(res.error) return toast.error(res.error.response.data.error || 'Error to get control')
+    isName(res.data.data)
+    return res.data.data
+  }
+
+  const downloadExcel = async () => {
+ 
+      const res = await downloadExcelRequest({responseType: 'blob'})
+  
+    const url = window.URL.createObjectURL(new Blob([res.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }));
+             
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `control.xlsx`;  
+        document.body.appendChild(link);
+        link.click() 
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+
+    toast.success(`Historial descargado `)
+    
+     
+  }
+
   return {
     control, 
     calcularControl, 
@@ -68,6 +99,9 @@ export const useControl = () => {
     findByRole,
     result, data,
     allControl, 
-    getAllControl
+    getAllControl,
+    downloadExcel,
+    name,
+    findByName
   }
 }

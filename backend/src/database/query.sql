@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS Gerencias (
     PRIMARY KEY PK_codeGerencia(codeGerencia)
 ); 
 
+
 CREATE TABLE IF NOT EXISTS Inventario (
     codeInventario INT NOT NULL AUTO_INCREMENT,
     date DATE NOT NULL,
@@ -50,7 +51,7 @@ CREATE TABLE IF NOT EXISTS ControlBoletas (
     codeBoleta INT NOT NULL AUTO_INCREMENT,
     hrs_init TIME NOT NULL, 
     hrs_end TIME NOT NULL,
-    role ENUM('TRABAJADOR', 'VISITA'),
+    role ENUM('COLABORADOR', 'PROYECTO', 'CLIENTE', 'PROVEEDOR'),
     description VARCHAR(255) NOT NULL,
     nameClient VARCHAR(50) NOT NULL,
     codeGerencia INT NOT NULL,
